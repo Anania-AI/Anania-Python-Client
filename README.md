@@ -12,14 +12,15 @@ from anania import Anania
 Anania.API_KEY = "YOUR API KEY"
 data = pd.read_csv("YOUR DATA PATH")
 
-##for creating new project and asking questions
+##for creating new project from table
 project = Anania()
-project.create_project(data)
-answer = project.ask_question("show me first row")
-print(answer.result)
+print(project.create_project(input_type = 'json',project_name='YOUR PROJECT NAME',data=data))
 
-##for asking questions on existing project
-project = Anania("YOUR PROJECT KEY")
-answer = project.ask_question("show me first row")
+# for creating a project from db
+project=Anania()
+print(project.create_project(input_type = 'db',project_name='MARKET_Car_Prices',connection_string='YOUR CONNECTION STRING',table_names=['TABLE 1','TABLE 2']))
+
+# asking questions
+answer = project.ask_question("show me all rows")
 print(answer.result)
 ```
