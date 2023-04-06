@@ -41,18 +41,9 @@ class Create(Config):
         else:
             raise Exception(f'Error creating project: {response.text}')
 
-
-    def create_project(project_name, input_type=Config.TYPE_CHAT, **kwargs):
+    def create_project_base(body):
 
         headers = {"api_key": Config.API_KEY} 
-        body = {"input_type": input_type, "project_name": project_name}
-
-        if input_type == Config.TYPE_URL:
-          body.update({"urls":kwargs.get("urls"), "crawl":kwargs.get("crawl")})
-        elif input_type in [Config.TYPE_PDF,Config.TYPE_CSV]:
-          body.update({"data":kwargs.get("data")})
-        elif input_type == Config.TYPE_DB:
-          body.update({"connection_string":kwargs.get("connection_string"), "table_names":kwargs.get("table_names")})
         
         response = requests.post(url=Config._ENDPOINT_TRAINING,headers=headers,json=body)
         
@@ -64,6 +55,22 @@ class Create(Config):
               print(f'Status: {response["Status"]}, Error message: {response["Output"]}')
         else:
             raise Exception(f'Error creating project: {response.text}')
+
+    def create_project_chat(project_name):
+        body = {"input_type": Config.TYPE_CHAT, "project_name": project_name}
+        return Create.create_project_base(body = body)
+
+    def create_project_url(project_name, urls, crawl=False):
+        body = {"input_type":Config.TYPE_URL, "project_name":project_name, "urls":urls, "crawl":crawl}
+        return Create.create_project_base(body = body)
+
+    def create_project_file(project_name, project_type, data):
+        body = {"input_type":project_type, "project_name":project_name, "data":data}
+        return Create.create_project_base(body = body)
+
+    def create_project_db(project_name, connection_string, table_names):
+        body = {"input_type":Config.TYPE_DB, "project_name":project_name, "connection_string":connection_string, "table_names":table_names}
+        return Create.create_project_base(body = body)
 
 
 class Ask(Config):
