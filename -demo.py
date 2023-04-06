@@ -6,8 +6,5 @@ Config.API_KEY = "YOUR API KEY"
 Ask.ask_document(question = "YOUR QUESTION", project_key = "YOUR PROJECT KEY")
 
 ## Creating a new project and using it
-project_key_url = Create.create_project(project_name = "YOUR PROJECT NAME",
-                                    input_type=Config.TYPE_URL,
-                                    urls = ["https://metric.am/"],
-                                    crawl = False)
+project_key_url = Create.create_project_url(project_name = "YOUR PROJECT NAME", urls = ["https://metric.am/"], crawl = False)
 Ask.ask_document("YOUR QUESTION", project_key = project_key_url)
