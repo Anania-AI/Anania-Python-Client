@@ -78,17 +78,19 @@ class Ask(Config):
             if response["Status"] == "Success":
               return response
             else:
-              print(f'Status: {response["Status"]}, Error message: {response["Error_message"]}')
+              raise Exception(f'Status: {response["Status"]}, Error message: {response["Error_message"]}')
         else:
             raise Exception(f'Error asking question: {response.text}')
 
     def ask_chat(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
         response = Ask.ask_question_base(question, project_key, endpoint)
-        return response["Output"]
+        if response["Output"]:
+            return response["Output"] 
 
     def ask_document(question, project_key, endpoint=Config._ENDPOINT_QUESTION_DOC):
         response = Ask.ask_question_base(question, project_key, endpoint)
-        return response["Output"]
+        if response["Output"]:
+            return response["Output"]
 
     def ask_tabular(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
         response = Ask.ask_question_base(question, project_key, endpoint)
@@ -100,7 +102,8 @@ class Ask(Config):
             if response["Chart exist"]:
                 required_keys.append("Output Chart")
         response = {i:response[i] for i in required_keys}
-        return response
+        if response:
+            return response
 
     def ask(question, project_type, project_key, **kwargs):
         if project_type in [Config.TYPE_CSV,Config.TYPE_DB]:
