@@ -3,24 +3,18 @@
 Simple Python client for working with Training and Question APIs. You can find API documentation [here](https://api.anania.ai/docs).
 
 ToDo:
- - Add error handlers and validity checks
+ - Add Metadata endpoint
+ - Add wheel to PyPI
 
 ```
-import pandas as pd
-from anania import Anania
+from anania import Config, Anania
 
-Anania.API_KEY = "YOUR API KEY"
-data = pd.read_csv("YOUR DATA PATH")
+Config.API_KEY = "YOUR API KEY"
 
-##for creating new project from table
-project = Anania()
-print(project.create_project(input_type = 'json',project_name='YOUR PROJECT NAME',data=data))
+## Using existing project
+Anania.ask_document(question = "YOUR QUESTION", project_key = "YOUR PROJECT KEY")
 
-# for creating a project from db
-project=Anania()
-print(project.create_project(input_type = 'db',project_name='MARKET_Car_Prices',connection_string='YOUR CONNECTION STRING',table_names=['TABLE 1','TABLE 2']))
-
-# asking questions
-answer = project.ask_question("show me all rows")
-print(answer.result)
+## Creating a new project and using it
+project_key_url = Anania.create_project_url(project_name = "YOUR PROJECT NAME", urls = ["https://metric.am/"], crawl = False)
+Anania.ask_document("YOUR QUESTION", project_key = project_key_url)
 ```
