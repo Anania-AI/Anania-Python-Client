@@ -7,6 +7,7 @@ setup(
     author="Team Anania",
     author_email="hrant@anania.ai",
     url="https://github.com/Anania-AI/Anania-Python-Client.git",
+    packages=setuptools.find_packages(),
     license="MIT",
     install_requires=[]
 )
