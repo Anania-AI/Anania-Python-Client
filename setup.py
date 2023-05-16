@@ -1,8 +1,5 @@
 from setuptools import setup, find_packages
 
-with open("requirements.txt", "r") as reqs:
-    requirements = reqs.read()
-
 setup(
     name="Anania",
     version="0.1",
