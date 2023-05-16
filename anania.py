@@ -24,7 +24,7 @@ class Config():
     TYPE_DB = "db"
 
 
-class Create(Config):
+class Anania(Config):
 
     def get_all_db_tables(connection_string, ssl=False):
         headers = {"api_key": Config.API_KEY} 
@@ -58,22 +58,19 @@ class Create(Config):
 
     def create_project_chat(project_name):
         body = {"input_type": Config.TYPE_CHAT, "project_name": project_name}
-        return Create.create_project_base(body = body)
+        return Anania.create_project_base(body = body)
 
     def create_project_url(project_name, urls, crawl=False):
         body = {"input_type":Config.TYPE_URL, "project_name":project_name, "urls":urls, "crawl":crawl}
-        return Create.create_project_base(body = body)
+        return Anania.create_project_base(body = body)
 
     def create_project_file(project_name, project_type, data):
         body = {"input_type":project_type, "project_name":project_name, "data":data}
-        return Create.create_project_base(body = body)
+        return Anania.create_project_base(body = body)
 
     def create_project_db(project_name, connection_string, table_names):
         body = {"input_type":Config.TYPE_DB, "project_name":project_name, "connection_string":connection_string, "table_names":table_names}
-        return Create.create_project_base(body = body)
-
-
-class Ask(Config):
+        return Anania.create_project_base(body = body)
 
     def ask_question_base(question, project_key, endpoint, **kwargs):
         headers = {'api_key': Config.API_KEY}
@@ -90,17 +87,17 @@ class Ask(Config):
             raise Exception(f'Error asking question: {response.text}')
 
     def ask_chat(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
-        response = Ask.ask_question_base(question, project_key, endpoint)
+        response = Anania.ask_question_base(question, project_key, endpoint)
         if response["Output"]:
             return response["Output"] 
 
     def ask_document(question, project_key, endpoint=Config._ENDPOINT_QUESTION_DOC):
-        response = Ask.ask_question_base(question, project_key, endpoint)
+        response = Anania.ask_question_base(question, project_key, endpoint)
         if response["Output"]:
             return response["Output"]
 
     def ask_tabular(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
-        response = Ask.ask_question_base(question, project_key, endpoint)
+        response = Anania.ask_question_base(question, project_key, endpoint)
         
         if not response["Output"]:
             required_keys = ["SQL"]
@@ -114,10 +111,10 @@ class Ask(Config):
 
     def ask(question, project_type, project_key, **kwargs):
         if project_type in [Config.TYPE_CSV,Config.TYPE_DB]:
-            Ask.ask_tabular(question, project_key)
+            Anania.ask_tabular(question, project_key)
         elif project_type in [Config.TYPE_PDF, Config.TYPE_URL]:
-            Ask.ask_document(question, project_key)
+            Anania.ask_document(question, project_key)
         elif project_type in [Config.TYPE_CHAT]:
-            Ask.ask_chat(question, project_key)
+            Anania.ask_chat(question, project_key)
         else:
             raise Exception(f"Unsupported project type: {project_type}")
