@@ -75,7 +75,7 @@ class Anania(Config):
     def ask_question_base(question, project_key, endpoint, **kwargs):
         headers = {'api_key': Config.API_KEY}
         body = {"project_key":project_key,"question":question}
-
+        body.update(kwargs)
         response = requests.post(endpoint, headers=headers, json=body)
         if response.status_code == 200:
             response = response.json()
@@ -86,18 +86,18 @@ class Anania(Config):
         else:
             raise Exception(f'Error asking question: {response.text}')
 
-    def ask_chat(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
-        response = Anania.ask_question_base(question, project_key, endpoint)
+    def ask_chat(question, project_key, endpoint=Config._ENDPOINT_QUESTION,retrieval_type = 'No retrieval',temperature=0.5,internet_browsing=True, follow_up=False):
+        response = Anania.ask_question_base(question, project_key, endpoint,retrieval_type=retrieval_type,temperature=temperature,internet_browsing=internet_browsing,follow_up=follow_up)
         if response["Output"]:
             return response["Output"] 
 
-    def ask_document(question, project_key, endpoint=Config._ENDPOINT_QUESTION_DOC):
-        response = Anania.ask_question_base(question, project_key, endpoint)
+    def ask_document(question, project_key, endpoint=Config._ENDPOINT_QUESTION_DOC,retrieval_type = 'BM25',temperature=0.3, follow_up=False):
+        response = Anania.ask_question_base(question, project_key, endpoint,temperature=temperature,follow_up=follow_up,retrieval_type=retrieval_type)
         if response["Output"]:
             return response["Output"]
 
-    def ask_tabular(question, project_key, endpoint=Config._ENDPOINT_QUESTION):
-        response = Anania.ask_question_base(question, project_key, endpoint)
+    def ask_tabular(question, project_key, endpoint=Config._ENDPOINT_QUESTION,temperature=0,follow_up=False,chart=False):
+        response = Anania.ask_question_base(question, project_key, endpoint,follow_up=follow_up,temperature=temperature,chart=chart)
         
         if not response["Output"]:
             required_keys = ["SQL"]
@@ -111,10 +111,10 @@ class Anania(Config):
 
     def ask(question, project_type, project_key, **kwargs):
         if project_type in [Config.TYPE_CSV,Config.TYPE_DB]:
-            Anania.ask_tabular(question, project_key)
+            Anania.ask_tabular(question, project_key,**kwargs)
         elif project_type in [Config.TYPE_PDF, Config.TYPE_URL]:
-            Anania.ask_document(question, project_key)
+            Anania.ask_document(question, project_key,**kwargs)
         elif project_type in [Config.TYPE_CHAT]:
-            Anania.ask_chat(question, project_key)
+            Anania.ask_chat(question, project_key,**kwargs)
         else:
             raise Exception(f"Unsupported project type: {project_type}")
